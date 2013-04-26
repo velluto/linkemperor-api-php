@@ -4,7 +4,7 @@ This library is used to access The Link Emperor API.
 
 ## Usage
 
-Include the pho files and use it as follow:
+Include the php files in the lib folder and use it as follow:
 
     include('customers.php');
     include('vendors.php');
