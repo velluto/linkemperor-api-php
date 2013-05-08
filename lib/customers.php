@@ -35,6 +35,34 @@ class LinkemperorCustomer {
   }
 
   
+  # This method returns a list of all the Articles that exist on your account.
+  # Parameters:
+  #  none
+  public function get_articles() {
+    
+    
+    
+  
+    return $this->linkemperor_exec(null, null,"/api/v2/customers/articles.json");
+  
+  }
+  
+  # This method returns details about the Article you specify.
+  # Parameters:
+  # - id: Article ID
+  public function get_articles_by_id($id) {
+    
+    
+    
+    if(!$id) {
+      throw new Exception('id should not be empty');
+    }
+    
+  
+    return $this->linkemperor_exec(null, null,"/api/v2/customers/articles/$id.json");
+  
+  }
+  
   # This method creates a new Article.
   # Parameters:
   # - campaign_id: Campaign ID for this Article
@@ -139,28 +167,22 @@ class LinkemperorCustomer {
   
   }
   
-  # This method creates a new campaign.  Remember that if you exceed your plan limit on Campaigns, there may be additional charges.
+  # This method returns a list of all the Campagins that exist on your account.
   # Parameters:
-  # - name: Name of the Campaign.
-  # - notes: Notes
-  public function create_campaign($name, $notes = null) {
+  #  none
+  public function get_campaigns() {
     
     
-    
-    if(!$name) {
-      throw new Exception('name should not be empty');
-    }
     
   
-    $parameters = array('campaign' => array('name' => $name, 'notes' => $notes));
-    return $this->linkemperor_exec($parameters, 'POST', "/api/v2/customers/campaigns.json");
+    return $this->linkemperor_exec(null, null,"/api/v2/customers/campaigns.json");
   
   }
   
-  # This method deletes the Campaign you specify.
+  # This method returns details about the campaign you specify.
   # Parameters:
   # - id: Campaign ID
-  public function delete_campaign($id) {
+  public function get_campaign_by_id($id) {
     
     
     
@@ -169,8 +191,7 @@ class LinkemperorCustomer {
     }
     
   
-    $parameters = array();
-    return $this->linkemperor_exec($parameters, 'DELETE', "/api/v2/customers/campaigns/$id.json");
+    return $this->linkemperor_exec(null, null,"/api/v2/customers/campaigns/$id.json");
   
   }
   
@@ -219,6 +240,41 @@ class LinkemperorCustomer {
     
   
     return $this->linkemperor_exec(null, null,"/api/v2/customers/campaigns/$id/trouble_spots.json");
+  
+  }
+  
+  # This method creates a new campaign.  Remember that if you exceed your plan limit on Campaigns, there may be additional charges.
+  # Parameters:
+  # - name: Name of the Campaign.
+  # - notes: Notes
+  public function create_campaign($name, $notes = null) {
+    
+    
+    
+    if(!$name) {
+      throw new Exception('name should not be empty');
+    }
+    
+  
+    $parameters = array('campaign' => array('name' => $name, 'notes' => $notes));
+    return $this->linkemperor_exec($parameters, 'POST', "/api/v2/customers/campaigns.json");
+  
+  }
+  
+  # This method deletes the Campaign you specify.
+  # Parameters:
+  # - id: Campaign ID
+  public function delete_campaign($id) {
+    
+    
+    
+    if(!$id) {
+      throw new Exception('id should not be empty');
+    }
+    
+  
+    $parameters = array();
+    return $this->linkemperor_exec($parameters, 'DELETE', "/api/v2/customers/campaigns/$id.json");
   
   }
   
@@ -291,6 +347,34 @@ class LinkemperorCustomer {
   
   }
   
+  # This method returns a list of all the Sites that exist on your account.
+  # Parameters:
+  #  none
+  public function get_sites() {
+    
+    
+    
+  
+    return $this->linkemperor_exec(null, null,"/api/v2/customers/sites.json");
+  
+  }
+  
+  # This method returns details about the Site you specify.
+  # Parameters:
+  # - id: Site ID
+  public function get_site_by_id($id) {
+    
+    
+    
+    if(!$id) {
+      throw new Exception('id should not be empty');
+    }
+    
+  
+    return $this->linkemperor_exec(null, null,"/api/v2/customers/sites/$id.json");
+  
+  }
+  
   # This method creates a new Site.
   # Parameters:
   # - campaign_id: Campaign ID for this Site
@@ -336,6 +420,34 @@ class LinkemperorCustomer {
   
   }
   
+  # This method returns a list of all the Targets that exist on your account (across all Campaigns).
+  # Parameters:
+  #  none
+  public function get_targets() {
+    
+    
+    
+  
+    return $this->linkemperor_exec(null, null,"/api/v2/customers/targets.json");
+  
+  }
+  
+  # This method returns details about the Target you specify.
+  # Parameters:
+  # - id: Target ID
+  public function get_target_by_id($id) {
+    
+    
+    
+    if(!$id) {
+      throw new Exception('id should not be empty');
+    }
+    
+  
+    return $this->linkemperor_exec(null, null,"/api/v2/customers/targets/$id.json");
+  
+  }
+  
   # This method creates a new Target.  You will need to provide a Campaign ID and a URL for the target.
   # Parameters:
   # - campaign_id: Campaign ID
@@ -373,6 +485,35 @@ class LinkemperorCustomer {
   
     $parameters = array();
     return $this->linkemperor_exec($parameters, 'DELETE', "/api/v2/customers/targets/$id.json");
+  
+  }
+  
+  # This method returns a list of all the Keywords that exist on your account.  You can optionally limit the list to those keywords that belong to a specific campaign or target.
+  # Parameters:
+  # - target_id: Limit keywords to those belonging to this target.
+  # - campaign_id: Limit keywords to those belonging to this campaign.
+  public function get_target_keywords($target_id = null, $campaign_id = null) {
+    
+    
+    
+  
+    return $this->linkemperor_exec(null, null,"/api/v2/customers/target_keywords.json");
+  
+  }
+  
+  # This method returns details about the Keyword you specify.
+  # Parameters:
+  # - id: Keyword ID
+  public function get_target_keyword_by_id($id) {
+    
+    
+    
+    if(!$id) {
+      throw new Exception('id should not be empty');
+    }
+    
+  
+    return $this->linkemperor_exec(null, null,"/api/v2/customers/target_keywords/$id.json");
   
   }
   

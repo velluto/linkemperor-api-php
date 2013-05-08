@@ -77,6 +77,22 @@ class LinkemperorVendor {
   
   }
   
+  # Returns the full details of a Blast.  Make sure to provide a Blast ID.
+  # Parameters:
+  # - id: ID # of the Blast
+  public function get_blast_by_id($id) {
+    
+    
+    
+    if(!$id) {
+      throw new Exception('id should not be empty');
+    }
+    
+  
+    return $this->linkemperor_exec(null, null,"/api/v2/vendors/blasts/$id.json");
+  
+  }
+  
   # Once you've completed link building for a request, you need to submit the URLs where links were built.  This PUT method does that.
   # 
   # After we receive this submission, we will verify the links provided within 24 hours.
