@@ -1,4 +1,3 @@
-
 <?php
 class LinkemperorVendor {
   function __construct($api_key) {
@@ -34,7 +33,7 @@ class LinkemperorVendor {
     }
   }
 
-  
+
   # We call orders placed for your link building Service a Blast.
   # Use this method to retrieve all outstanding orders for your link building service(s).
   # 
@@ -42,57 +41,36 @@ class LinkemperorVendor {
   # Parameters:
   # - service_id: ID of a Service.  If provided, the response will be scoped to just that service ID.
   public function get_blasts($service_id = null) {
-    
-    
-    
-  
     return $this->linkemperor_exec(null, null,"/api/v2/vendors/blasts.json");
-  
   }
-  
+
   # Pulls the next blast from the order queue, marks it as having been started,
   # and returns full information about the Blast, including Targets and Output URLs, if available.
   # Parameters:
   # - service_id: ID of a Service.  If provided, the response will be scoped to just that service ID.
   public function get_next_blast($service_id = null) {
-    
-    
-    
-  
     return $this->linkemperor_exec(null, null,"/api/v2/vendors/blasts/next.json");
-  
   }
-  
+
   # Pulls a batch of blast from the order queue, marks them as having been started,
   # and returns full information about the Blast, including Targets and Output URLs, if available.
   # Parameters:
   # - service_id: ID of a Service.  If provided, the response will be scoped to just that service ID.
   # - batch_size: Batch size.  If not provided, the default batch size is 100
   public function get_next_batch_blasts($service_id = null, $batch_size = null) {
-    
-    
-    
-  
     return $this->linkemperor_exec(null, null,"/api/v2/vendors/blasts/next_batch.json");
-  
   }
-  
+
   # Returns the full details of a Blast.  Make sure to provide a Blast ID.
   # Parameters:
   # - id: ID # of the Blast
   public function get_blast_by_id($id) {
-    
-    
-    
     if(!$id) {
       throw new Exception('id should not be empty');
     }
-    
-  
     return $this->linkemperor_exec(null, null,"/api/v2/vendors/blasts/$id.json");
-  
   }
-  
+
   # Once you've completed link building for a request, you need to submit the URLs where links were built.  This PUT method does that.
   # 
   # After we receive this submission, we will verify the links provided within 24 hours.
@@ -102,88 +80,58 @@ class LinkemperorVendor {
   # - id: ID # of the Blast
   # - links: A string containing the list of links to submit (newline delimited)
   public function submit_built_link($id, $links) {
-    
-    
-    
     if(!$id) {
       throw new Exception('id should not be empty');
     }
-    
+
     if(!$links) {
       throw new Exception('links should not be empty');
     }
-    
-  
     $parameters = array('blast' => array('links' => $links));
     return $this->linkemperor_exec($parameters, 'PUT', "/api/v2/vendors/blasts/$id.json");
-  
   }
-  
+
   # Lists all available Services.  This is a great way to automatically compare your service against the current competition.
   # Parameters:
   #  none
   public function get_services() {
-    
-    
-    
-  
     return $this->linkemperor_exec(null, null,"/api/v2/vendors/services.json");
-  
   }
-  
+
   # Lists the full details of a specific Service.
   # Parameters:
   # - id: ID # of the Service
   public function get_service_by_id($id) {
-    
-    
-    
     if(!$id) {
       throw new Exception('id should not be empty');
     }
-    
-  
     return $this->linkemperor_exec(null, null,"/api/v2/vendors/services/$id.json");
-  
   }
-  
+
   # This API method looks at all the Built URLs submitted to a given Service in the last 7 days and finds domains that have never passed our link checker.
   # 
   # This is a great way to clean your list of URLs used for submissions.
   # Parameters:
   # - id: ID # of the Service
   public function get_failed_domains($id) {
-    
-    
-    
     if(!$id) {
       throw new Exception('id should not be empty');
     }
-    
-  
     return $this->linkemperor_exec(null, null,"/api/v2/vendors/services/$id/failed_domains.json");
-  
   }
-  
+
   # Creates a test blast for your Service.  It will not affect your score or marketplace rank.  However, if you submit URLs that fail to pass our link checker, they will be reflected in the failed_domains method of the API.
   # 
   # This is particularly useful for testing new URL lists or potential link sources.
   # Parameters:
   # - id: ID # of the Service
   public function create_test_blast($id) {
-    
-    
-    
     if(!$id) {
       throw new Exception('id should not be empty');
     }
-    
-  
     $parameters = array();
     return $this->linkemperor_exec($parameters, 'POST', "/api/v2/vendors/services/$id/test_blast.json");
-  
   }
-  
+
 }
 ?>
-          
