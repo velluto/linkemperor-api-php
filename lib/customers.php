@@ -199,12 +199,13 @@ class LinkemperorCustomer {
   # - how_pay: How to pay for the Order. 'cash' to generate an invoice that will be settled against your account on file, or 'credits' to pull from the pool of existing credits in your account.
   # - callback_url: The URL to notify when the status of the Order is updated. This occurs when component Blasts either succeed (and URLs are available for viewing) or fail (and replacement Blasts have been ordered.)
   # - custom: You may provide any string here. We will save it as part of the Order and include it in the returned data whenever you check on an Order's status. It's great for holding your internal ID number for the Order.
+  # - special_requirements: Special requirements
   # - requests: This is where the actual object describing your order goes.  This is either a JSON nested array or XML nested tags (depending on your current format).  The schema for this field is described below in the section titled Schema Used In Your Request.
-  public function create_order($requests, $how_pay = null, $callback_url = null, $custom = null) {
+  public function create_order($requests, $how_pay = null, $callback_url = null, $custom = null, $special_requirements = null) {
     if(!$requests) {
       throw new Exception('requests should not be empty');
     }
-    $parameters = array('order' => array('how_pay' => $how_pay, 'callback_url' => $callback_url, 'custom' => $custom, 'requests' => $requests));
+    $parameters = array('order' => array('how_pay' => $how_pay, 'callback_url' => $callback_url, 'custom' => $custom, 'special_requirements' => $special_requirements, 'requests' => $requests));
     return $this->linkemperor_exec($parameters, 'POST', "/api/v2/customers/orders.json");
   }
 
