@@ -1,4 +1,5 @@
 <?php
+
 class LinkemperorCustomer {
   function __construct($api_key) {
     $this->api_key = $api_key;
@@ -168,15 +169,38 @@ class LinkemperorCustomer {
   }
 
   # This method creates a new campaign.  Remember that if you exceed your plan limit on Campaigns, there may be additional charges.
+  # 
+  # If you allocate more total blasts than you have available, we will automatically upgrade your plan so that every campaign has at least one daily blast assigned.
   # Parameters:
   # - name: Name of the Campaign.
   # - notes: Notes
-  public function create_campaign($name, $notes = null) {
+  # - active: Is the campaign active?
+  # - assigned_blasts_per_day: Blasts per day
+  # - default_target_keyword_value: Default target keyword value.  Valid options are: calculated (default), equal, or zero
+  # - visit_value: Per visit value
+  public function create_campaign($name, $notes = null, $active = null, $assigned_blasts_per_day = null, $default_target_keyword_value = null, $visit_value = null) {
     if(!$name) {
       throw new Exception('name should not be empty');
     }
-    $parameters = array('campaign' => array('name' => $name, 'notes' => $notes));
+    $parameters = array('campaign' => array('name' => $name, 'notes' => $notes, 'active' => $active, 'assigned_blasts_per_day' => $assigned_blasts_per_day, 'default_target_keyword_value' => $default_target_keyword_value, 'visit_value' => $visit_value));
     return $this->linkemperor_exec($parameters, 'POST', "/api/v2/customers/campaigns.json");
+  }
+
+  # This method updates an existing Campaign.
+  # Parameters:
+  # - id: ID # of the Campaign
+  # - name: Name of the Campaign.
+  # - notes: Notes
+  # - active: Is the campaign active?
+  # - assigned_blasts_per_day: Blasts per day
+  # - default_target_keyword_value: Default target keyword value.  Valid options are: calculated (default), equal, or zero
+  # - visit_value: Per visit value
+  public function update_campaign($id, $name = null, $notes = null, $active = null, $assigned_blasts_per_day = null, $default_target_keyword_value = null, $visit_value = null) {
+    if(!$id) {
+      throw new Exception('id should not be empty');
+    }
+    $parameters = array('campaign' => array('name' => $name, 'notes' => $notes, 'active' => $active, 'assigned_blasts_per_day' => $assigned_blasts_per_day, 'default_target_keyword_value' => $default_target_keyword_value, 'visit_value' => $visit_value));
+    return $this->linkemperor_exec($parameters, 'PUT', "/api/v2/customers/campaigns/$id.json");
   }
 
   # This method deletes the Campaign you specify.
@@ -190,22 +214,29 @@ class LinkemperorCustomer {
     return $this->linkemperor_exec($parameters, 'DELETE', "/api/v2/customers/campaigns/$id.json");
   }
 
+  # This method reallocates your linkbuilding percentages equally between all active campaigns.
+  # Parameters:
+  #  none
+  public function linkbuilding_reallocate_equally() {
+    $parameters = array();
+    return $this->linkemperor_exec($parameters, 'POST', "/api/v2/customers/linkbuilding/reallocate_equally.json");
+  }
+
   # This method is used to purchase link building.<br /><br />
   # We call a single purchase an Order, and each order can contain multiple Blasts.<br /><br />
   # First, you'll need to determine which of our link building Services you'd like to order.  Use the /services endpoint of the API to get a list of available services.<br /><br />
   # Now let's talk about building the actual order.  An OrderRequest specifies the Services to order and the Targets (URL/anchor text) to build links to.  Each Order can have multiple OrderRequests.<br /><br />
   # You can see a sample OrderRequest (in JSON) by clicking "Model Schema" under the "Schema Used In Your Request" section just below.
   # Parameters:
-  # - how_pay: How to pay for the Order. 'cash' to generate an invoice that will be settled against your account on file, or 'credits' to pull from the pool of existing credits in your account.
   # - callback_url: The URL to notify when the status of the Order is updated. This occurs when component Blasts either succeed (and URLs are available for viewing) or fail (and replacement Blasts have been ordered.)
   # - custom: You may provide any string here. We will save it as part of the Order and include it in the returned data whenever you check on an Order's status. It's great for holding your internal ID number for the Order.
   # - special_requirements: Special requirements
   # - requests: This is where the actual object describing your order goes.  This is either a JSON nested array or XML nested tags (depending on your current format).  The schema for this field is described below in the section titled Schema Used In Your Request.
-  public function create_order($requests, $how_pay = null, $callback_url = null, $custom = null, $special_requirements = null) {
+  public function create_order($requests, $callback_url = null, $custom = null, $special_requirements = null) {
     if(!$requests) {
       throw new Exception('requests should not be empty');
     }
-    $parameters = array('order' => array('how_pay' => $how_pay, 'callback_url' => $callback_url, 'custom' => $custom, 'special_requirements' => $special_requirements, 'requests' => $requests));
+    $parameters = array('order' => array('callback_url' => $callback_url, 'custom' => $custom, 'special_requirements' => $special_requirements, 'requests' => $requests));
     return $this->linkemperor_exec($parameters, 'POST', "/api/v2/customers/orders.json");
   }
 
@@ -310,7 +341,8 @@ class LinkemperorCustomer {
   # - campaign_id: Campaign ID
   # - url_input: Fully qualified URL for the target.
   # - keyword_input: Keywords to add to the target.  Separate multiple keywords with linebreaks.
-  public function create_target($campaign_id, $url_input, $keyword_input = null) {
+  # - visit_value: Value of a visit to this target.
+  public function create_target($campaign_id, $url_input, $keyword_input = null, $visit_value = null) {
     if(!$campaign_id) {
       throw new Exception('campaign_id should not be empty');
     }
@@ -318,8 +350,20 @@ class LinkemperorCustomer {
     if(!$url_input) {
       throw new Exception('url_input should not be empty');
     }
-    $parameters = array('target' => array('campaign_id' => $campaign_id, 'url_input' => $url_input, 'keyword_input' => $keyword_input));
+    $parameters = array('target' => array('campaign_id' => $campaign_id, 'url_input' => $url_input, 'keyword_input' => $keyword_input, 'visit_value' => $visit_value));
     return $this->linkemperor_exec($parameters, 'POST', "/api/v2/customers/targets.json");
+  }
+
+  # This method updates an existing Target.
+  # Parameters:
+  # - id: ID # of the Target
+  # - visit_value: Value of a visit to this target.
+  public function update_target($id, $visit_value = null) {
+    if(!$id) {
+      throw new Exception('id should not be empty');
+    }
+    $parameters = array('target' => array('visit_value' => $visit_value));
+    return $this->linkemperor_exec($parameters, 'PUT', "/api/v2/customers/targets/$id.json");
   }
 
   # This method deletes the Target you specify.
@@ -367,6 +411,18 @@ class LinkemperorCustomer {
     return $this->linkemperor_exec($parameters, 'POST', "/api/v2/customers/target_keywords.json");
   }
 
+  # This method updates an existing TargetKeyword.
+  # Parameters:
+  # - id: ID # of the TargetKeyword
+  # - value: Value of a visit to this TargetKeyword.
+  public function update_target($id, $value = null) {
+    if(!$id) {
+      throw new Exception('id should not be empty');
+    }
+    $parameters = array('target_keyword' => array('value' => $value));
+    return $this->linkemperor_exec($parameters, 'PUT', "/api/v2/customers/target_keywords/$id.json");
+  }
+
   # This method deletes the Keyword you specify.
   # Parameters:
   # - id: Keyword ID
@@ -395,6 +451,13 @@ class LinkemperorCustomer {
       throw new Exception('id should not be empty');
     }
     return $this->linkemperor_exec(null, null,"/api/v2/customers/trouble_spots/$id.json");
+  }
+
+  # This endpoint is no longer used.
+  # Parameters:
+  #  none
+  public function info_blast_credit_balance() {
+    return $this->linkemperor_exec(null, null,"/api/v2/customers/info/blast_credit_balance.json");
   }
 
 }

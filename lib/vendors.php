@@ -80,9 +80,14 @@ class LinkemperorVendor {
   # 
   # If you are required to provide login information for the built urls,
   # provide it in the url itself using the following format: http://user:password@domain.com/path
+  # 
+  # This endpoint can be a little hard to implement, so make sure your JSON payload looks something like this one.  If you're using
+  # XML, then you'll need to modify accordingly.
+  # 
+  # { "blast": { "links": ["http://foo.com", "http://bar.com"] } }
   # Parameters:
   # - id: ID # of the Blast
-  # - links: A string containing the list of links to submit (newline delimited)
+  # - links: A string containing the list of links to submit (newline delimited) OR an array of links.
   public function submit_built_link($id, $links) {
     if(!$id) {
       throw new Exception('id should not be empty');
@@ -122,6 +127,26 @@ class LinkemperorVendor {
       throw new Exception('id should not be empty');
     }
     return $this->linkemperor_exec(null, null,"/api/v2/vendors/services/$id/failed_domains.json");
+  }
+
+  # Pause a currently active service.
+  # Parameters:
+  # - id: ID # of the Service
+  public function pause_running_service($id) {
+    if(!$id) {
+      throw new Exception('id should not be empty');
+    }
+    return $this->linkemperor_exec(null, null,"/api/v2/vendors/services/$id/pause.json");
+  }
+
+  # Resume a currently paused service.
+  # Parameters:
+  # - id: ID # of the Service
+  public function resume_paused_service($id) {
+    if(!$id) {
+      throw new Exception('id should not be empty');
+    }
+    return $this->linkemperor_exec(null, null,"/api/v2/vendors/services/$id/run.json");
   }
 
   # Creates a test blast for your Service.  It will not affect your score or marketplace rank.  However, if you submit URLs that fail to pass our link checker, they will be reflected in the failed_domains method of the API.
